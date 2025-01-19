@@ -127,3 +127,96 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quadratic Function Graph</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+    svg {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="chart"></div>
+
+  <script>
+    // SVGのサイズ
+    const width = 800;
+    const height = 400;
+
+    // 二次関数のパラメータ
+    const a = 0.01;  // x^2の係数
+    const b = -1;    // xの係数
+    const c = 0;     // 定数項
+
+    // 二次関数の式
+    const quadratic = x => a * x * x + b * x + c;
+
+    // SVGコンテナを作成
+    const svg = d3.select("#chart")
+                  .append("svg")
+                  .attr("width", width)
+                  .attr("height", height);
+
+    // 軸の範囲を設定
+    const xScale = d3.scaleLinear()
+                     .domain([-width / 2, width / 2])
+                     .range([0, width]);
+
+    const yScale = d3.scaleLinear()
+                     .domain([height / 2, -height / 2])  // 中央を0にして上下反転
+                     .range([0, height]);
+
+    // x軸のデータ
+    const data = d3.range(-width / 2, width / 2, 1).map(x => {
+      return {x: x, y: quadratic(x)};
+    });
+
+    // 線を描画
+    const line = d3.line()
+                   .x(d => xScale(d.x))
+                   .y(d => yScale(d.y));
+
+    svg.append("path")
+       .data([data])
+       .attr("class", "line")
+       .attr("d", line)
+       .attr("fill", "none")
+       .attr("stroke", "blue")
+       .attr("stroke-width", 2);
+
+    // X軸を描画
+    svg.append("line")
+       .attr("x1", xScale(0))
+       .attr("y1", 0)
+       .attr("x2", xScale(0))
+       .attr("y2", height)
+       .attr("stroke", "black")
+       .attr("stroke-width", 2);
+
+    // Y軸を描画
+    svg.append("line")
+       .attr("x1", 0)
+       .attr("y1", yScale(0))
+       .attr("x2", width)
+       .attr("y2", yScale(0))
+       .attr("stroke", "black")
+       .attr("stroke-width", 2);
+  </script>
+
+</body>
+</html>
