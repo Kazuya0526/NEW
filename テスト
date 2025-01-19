@@ -1,1 +1,81 @@
 npm install react-native-svg d3-shape
+import React from 'react';
+import { View, Dimensions, Text, StyleSheet } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
+import { line, curveBasis } from 'd3-shape';
+
+// グラフの幅と高さ
+const { width, height } = Dimensions.get('window');
+
+// 二次関数のパラメータ
+const a = 0.01;  // x^2の係数
+const b = -1;    // xの係数
+const c = 0;     // 定数項
+
+// グラフを描画する関数
+const generateQuadraticPath = () => {
+  // x座標の範囲を決める
+  const xMin = -width / 2;
+  const xMax = width / 2;
+
+  // D3.jsを使って二次関数のy座標を計算
+  const quadraticFunction = (x) => a * x * x + b * x + c;
+
+  // x軸の値からy軸の値を計算してPathを生成
+  const data = [];
+  for (let x = xMin; x <= xMax; x += 1) {
+    data.push([x, quadraticFunction(x)]);
+  }
+
+  // D3.jsのline関数でPathを生成
+  const lineGenerator = line()
+    .x(d => d[0] + width / 2)  // x座標を画面の中央に合わせる
+    .y(d => height / 2 - d[1]); // y座標も中央に合わせる
+
+  return lineGenerator(data);
+};
+
+const App = () => {
+  const pathData = generateQuadraticPath();
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>二次関数のグラフ: y = {a}x² + {b}x + {c}</Text>
+      <Svg height={height} width={width}>
+        {/* 座標軸を描画 */}
+        <Path
+          d={`M${width / 2},0 L${width / 2},${height}`} // Y軸
+          stroke="black"
+          strokeWidth="2"
+        />
+        <Path
+          d={`M0,${height / 2} L${width},${height / 2}`} // X軸
+          stroke="black"
+          strokeWidth="2"
+        />
+        {/* 二次関数のグラフ */}
+        <Path
+          d={pathData}
+          fill="none"
+          stroke="blue"
+          strokeWidth="2"
+        />
+      </Svg>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 20,
+  },
+});
+
+export default App;
