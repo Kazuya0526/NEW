@@ -91,3 +91,6 @@
 
 </body>
 </html>
+git add index.html
+git commit -m "Add quadratic function graph"
+git push origin main
