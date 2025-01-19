@@ -94,3 +94,36 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+import React, { useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
+import MapboxGL from '@react-native-mapbox-gl/maps';
+
+// Mapboxのアクセストークン設定（自分のトークンを入力）
+MapboxGL.setAccessToken('YOUR_MAPBOX_ACCESS_TOKEN');
+
+const App = () => {
+  useEffect(() => {
+    // Mapboxのスタイルが読み込まれることを確認
+    MapboxGL.setTelemetryEnabled(false); // ユーザーデータ収集を無効にする（オプション）
+  }, []);
+
+  return (
+    <View style={{ flex: 1 }}>
+      <MapboxGL.MapView style={{ flex: 1 }}>
+        {/* 世界地図を表示 */}
+        <MapboxGL.Camera
+          zoomLevel={1}  // 地図のズームレベル
+          centerCoordinate={[0, 20]}  // 地図の初期座標
+        />
+      </MapboxGL.MapView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
+
+export default App;
